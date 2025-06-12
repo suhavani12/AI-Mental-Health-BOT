@@ -1,0 +1,64 @@
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import random
+import time
+
+# Initialize sentiment analyzer
+nltk.download('vader_lexicon')
+sid = SentimentIntensityAnalyzer()
+
+# Pre-defined responses
+motivational_quotes = [
+    "You're doing your best, and that is enough.",
+    "Every day is a second chance.",
+    "You are stronger than you think.",
+    "Take it one step at a time.",
+    "It's okay to not be okay. You're not alone."
+]
+
+relaxation_tips = [
+    "Try deep breathing for 1 minute.",
+    "Listen to calming music.",
+    "Take a short walk.",
+    "Write down your thoughts.",
+    "Try a quick meditation session."
+]
+
+def analyze_mood(text):
+    scores = sid.polarity_scores(text)
+    compound = scores['compound']
+    if compound >= 0.5:
+        return 'positive'
+    elif compound <= -0.5:
+        return 'negative'
+    else:
+        return 'neutral'
+
+def mental_health_bot():
+    print("🧠 Mental Health Bot\n")
+    name = input("Hello! What's your name? ")
+    print(f"\nHi {name}, how are you feeling today?\n")
+
+    while True:
+        user_input = input("You: ")
+        mood = analyze_mood(user_input)
+
+        if any(word in user_input.lower() for word in ["bye", "exit", "quit"]):
+            print("Bot: Take care! Remember, you're never alone. 💚")
+            break
+
+        if mood == "positive":
+            print("Bot: That's great to hear! 😊 Keep it up!")
+        elif mood == "negative":
+            print("Bot: I'm sorry you're feeling that way. 💔")
+            print("Bot: Here's something that might help:")
+            print("📌", random.choice(motivational_quotes))
+            print("🧘 Tip:", random.choice(relaxation_tips))
+        else:
+            print("Bot: I see. Would you like to talk more or hear a motivational quote?")
+        
+        time.sleep(1)
+        print("\nBot: How else can I support you?\n")
+
+# Run the bot
+mental_health_bot()
